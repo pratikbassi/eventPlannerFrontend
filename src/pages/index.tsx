@@ -4,7 +4,7 @@ import Column from "@/components/column";
 import EventForm from "@/components/eventForm";
 
 let getData = async () => {
-    const res = await fetch("http://localhost:8000/api/event/",);
+    const res = await fetch("http://localhost:8000/api/events/",);
     if (!res.ok) {
         throw new Error("Failed to fetch data");
     }
@@ -42,8 +42,6 @@ export default function Home() {
                 <button onClick={() => { handleOrientationChange() }}>Change Orientation</button>
                 <EventForm></EventForm>
                 {data ? (orientation === 'landscape' ? <Row events={data} /> : <Column events={data} /> ) : "Loading..."}
-
-
 
             </main>
             <footer>

@@ -1,21 +1,26 @@
 import React, {useState} from 'react';
 
 interface EditEventProps {
-    startTimeProp: string,
-    endTimeProp: string,
-    descriptionProp?: string | undefined
+    title: string,
+    startTime: string,
+    endTime: string,
+    description: string
     id: number,
-    cancelProp: () => void
+    cancel: () => void
 }
 
 
-const editEventForm: React.FC<EditEventProps> = ({startTimeProp, endTimeProp, descriptionProp, id, cancelProp}) => {
-    const [description, setDescription] = useState(descriptionProp);
-    const [start_time, setStartTime] = useState(startTimeProp);
-    const [end_time, setEndTime] = useState(endTimeProp)
+const editEventForm: React.FC<EditEventProps> = ({startTime, endTime, description, id, cancel, title}) => {
+    const [descriptionState, setDescription] = useState(description);
+    const [startTimeState, setStartTime] = useState(startTime ? new Date(startTime).toISOString().slice(0, 16) : '');
+    const [endTimeState, setEndTime] = useState(endTime ?  new Date(endTime).toISOString().slice(0, 16) : '');
 
 
-    const onEventEdit = async (event: { start_time: unknown; end_time: string; description: unknown; }) => {
+    const onEventEdit = async (event: {
+        descriptionState: string;
+        endTimeState: string;
+        startTimeState: string
+    }) => {
     try {
 
         const response = await fetch('http://localhost:8000/api/update/' + id, {
@@ -40,42 +45,79 @@ const editEventForm: React.FC<EditEventProps> = ({startTimeProp, endTimeProp, de
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onEventEdit({start_time, end_time, description})
+        onEventEdit({startTimeState, endTimeState, descriptionState})
             .catch((error => {
                 console.log(error)
             }));
     };
 
-    const formStyle = {
+const modalStyle = {
+        position: 'fixed',
+        top: '25%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: 1000,
+        maxWidth: '500px',
+        height: 'auto',
+        overflow: 'auto',
         backgroundColor: '#ffffff',
         display: 'flex',
         flexDirection: 'column',
-        gap: '10px',
-        padding: '10px',
-        margin: '20px',
-        border: '1px solid #ccc',
-        borderRadius: '5px',
-        width: '300px'
+        padding: '20px',
+        borderRadius: '10px',
+        boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
     };
 
+const formStyle = {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '10px',
+        width: '100%',
+    };
+
+    const labelStyle = {
+        fontWeight: 'bold',
+        marginBottom: '5px',
+    };
+
+    const inputStyle = {
+
+        fontWeight: 'normal',
+        padding: '8px',
+        margin: '0 0 0 5px',
+        borderRadius: '5px',
+        border: '1px solid #ccc',
+    };
+
+
     return (
-        <form onSubmit={handleSubmit} style={formStyle}>
-            <label>
-                Type:
-                <input type="text" value={description} onChange={(e) => setDescription(e.target.value)}/>
-            </label>
-            <label>
-                Start Time:
-                <input type="datetime-local" value={start_time} onChange={(e) => setStartTime(e.target.value)}/>
-            </label>
-            <label>
-                End Time:
-                <input type="datetime-local" value={end_time} onChange={(e) => setEndTime(e.target.value)}/>
-            </label>
-            <button type="submit">Update Event</button>
-            <button type="button" onClick={() => {}}>Delete Event</button>
-            <button type="button" onClick={() => {cancelProp()}}>Close</button>
-        </form>
+        <div style={modalStyle}>
+            <h3 >Edit {title}</h3>
+
+            <form onSubmit={handleSubmit} style={formStyle}>
+                <label style={labelStyle}>
+                    Type:
+                    <input type="text" value={descriptionState} onChange={(e) => setDescription(e.target.value)} style={inputStyle}/>
+                </label>
+                <label style={labelStyle}>
+                    Start Time:
+                    <input type="datetime-local" value={startTimeState} onChange={(e) => setStartTime(e.target.value)} style={inputStyle}/>
+                </label>
+                <label style={labelStyle}>
+                    End Time:
+                    <input type="datetime-local" value={endTimeState} onChange={(e) => setEndTime(e.target.value)} style={inputStyle}/>
+                </label>
+                <button type="submit">Update Event</button>
+                <button type="button" onClick={() => {
+                }}>Delete Event
+                </button>
+                <button type="button" onClick={() => {
+                    cancel()
+                }}>Close
+                </button>
+            </form>
+        </div>
+
     );
 };
 
