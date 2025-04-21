@@ -55,7 +55,7 @@ export default function Home() {
                 }}>Create Event
                 </button>
 
-                {createForm ? <EventForm setRefresh={setRefresh}></EventForm> : null}
+                {createForm ? <EventForm setRefresh={setRefresh} cancel={handleShowCreateForm}></EventForm> : null}
 
                 {data ? (orientation === 'landscape' ? <Row events={data} setRefresh={setRefresh}/> :
                     <Column events={data} setRefresh={setRefresh}/>) : "Loading..."}

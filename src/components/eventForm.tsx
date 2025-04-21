@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import Cookies from 'js-cookie';
 
 const onEventCreate = async (event: { start_time: string; end_time: string; description: string; title: string }) => {
     try {
@@ -25,10 +24,11 @@ const onEventCreate = async (event: { start_time: string; end_time: string; desc
 }
 
 interface EventFormProps {
-    setRefresh: (value: (((prevState: boolean) => boolean) | boolean)) => void
+    setRefresh: (value: (((prevState: boolean) => boolean) | boolean)) => void,
+    cancel: () => void
 }
 
-const EventForm: React.FC = ({setRefresh}: EventFormProps) => {
+const EventForm: React.FC = ({setRefresh, cancel}: EventFormProps) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [start_time, setStartTime] = useState('');
@@ -48,30 +48,46 @@ const EventForm: React.FC = ({setRefresh}: EventFormProps) => {
 
     };
 
+    const formStyle = {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'end',
+        gap: '10px',
+        width: '100%',
+    };
+
+    const labelStyle = {
+        fontWeight: 'bold',
+        marginBottom: '5px',
+    };
+
     return (
         <div className={"modal"}>
             <h3>Create Event</h3>
 
-            <form onSubmit={handleSubmit}>
-                <label>
+            <form onSubmit={handleSubmit} style={formStyle}>
+                <label style={labelStyle}>
                     Title:
                     <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required/>
                 </label>
-                <label>
+                <label style={labelStyle}>
                     Type:
                     <input type="text" value={description} onChange={(e) => setDescription(e.target.value)}/>
                 </label>
-                <label>
+                <label style={labelStyle}>
                     Start Time:
                     <input type="datetime-local" value={start_time} onChange={(e) => setStartTime(e.target.value)}
                            required/>
                 </label>
-                <label>
+                <label style={labelStyle}>
                     End Time:
                     <input type="datetime-local" value={end_time} onChange={(e) => setEndTime(e.target.value)}
                            required/>
                 </label>
                 <button type="submit">Save Event</button>
+                <button type={"button"} onClick={() => { cancel()
+                }}>Cancel
+                </button>
             </form>
         </div>
 

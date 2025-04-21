@@ -39,18 +39,18 @@ const Event: React.FC<EventProps> = ({
     const timeRemainingInHours = Math.floor((end.getTime() - new Date().getTime()) / (1000 * 3600));
 
     const barStyle = {
-        width: width ? width : `${durationInHours * 10}px`,
+        width: width ? width : `${durationInHours * 4}px`,
         minWidth: '150px',
         maxWidth: '1000px',
         backgroundColor: color,
         padding: '3px 3px 0px 10px',
         overflow: 'hidden',
-        whiteSpace: 'nowrap',
+        whiteSpace: 'wrap',
         textOverflow: 'hidden',
-        left: left ? left : `${timeFromCurrentInHours * 10}px`,
+        left: left ? left : `${timeFromCurrentInHours * 3}px`,
         position: 'relative',
         borderRadius: '5px',
-        textAlign: listView && timeFromCurrentInHours && timeFromCurrentInHours > 0 ? 'left' : 'right',
+        textAlign: listView || (timeFromCurrentInHours && timeFromCurrentInHours) > 0 ? 'left' : 'right',
     };
 
 

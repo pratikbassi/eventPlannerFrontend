@@ -1,6 +1,6 @@
 import React from 'react';
 import Event from "@/components/event";
-import {COLOR_LIST} from "@/helpers/constants";
+import {COLOR_LIST, groupedEvents} from "@/helpers/constants";
 import {root} from "postcss";
 
 interface RowProps {
@@ -12,26 +12,7 @@ const Row: React.FC<RowProps> = ({events, setRefresh}) => {
 
 
     // Group events by track ID
-    const groupedEvents = () => {
 
-        let returnObj = {}
-
-        for (let event of events) {
-            if (returnObj[event['track_title']]) {
-                returnObj[event['track_title']].push(event)
-            } else {
-                returnObj[event['track_title']] = [event]
-            }
-        }
-
-        for (let key in returnObj) {
-            returnObj[key].sort((a: any, b: any) => {
-                return new Date(a['start_time']).getTime() - new Date(b['start_time']).getTime();
-            })
-        }
-
-        return returnObj;
-    };
 
 
     const rootStyle = {
@@ -54,7 +35,7 @@ const Row: React.FC<RowProps> = ({events, setRefresh}) => {
 
     return (
         <div style={rootStyle}>
-            {Object.entries(groupedEvents()).map(([trackId, eventsInTrack]) => (
+            {Object.entries(groupedEvents(events)).map(([trackId, eventsInTrack]) => (
                 <div key={trackId} >
                     <h3>Track {trackId === 'null' ? 'Unassigned' : trackId}</h3>
                     <ul style={trackContainerStyle}>
