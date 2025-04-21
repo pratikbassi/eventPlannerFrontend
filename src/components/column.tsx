@@ -1,27 +1,37 @@
 import React from 'react';
 import Event from "@/components/event";
+import {COLOR_LIST} from "@/helpers/constants";
+
 
 interface RowProps {
-    events: any;
+    events: any,
+    setRefresh: (value: (((prevState: boolean) => boolean) | boolean)) => void
 }
 
-const Column: React.FC<RowProps> = ({events}) => {
-
-    const COLOR_LIST = ['#CD7A7A', '#B2FFD6', '#35A7FF', '#B08EA2', '#FDCA40'];
+const Column: React.FC<RowProps> = ({events, setRefresh}) => {
 
     const columnStyle = {
-        width: `80%`,
-        display: 'flex-column',
+        width: `100%`,
+        display: 'flex',
+        flexDirection: 'column', // Arrange events in a row
         overflow: 'hidden',
+        gap: '10px',
     };
 
     return (
         <ul style={columnStyle}>
             {events.map((event, index) => {
                 return (
-                    <li key={index} style={columnStyle}>
-                        <Event start_time={event['start_time']} end_time={event['end_time']} title={event['title']}
-                               color={COLOR_LIST[index % COLOR_LIST.length]}/>
+                    <li key={index}>
+                        <Event
+                            start_time={event['start_time']}
+                            end_time={event['end_time']}
+                            title={event['title']}
+                            color={COLOR_LIST[index % COLOR_LIST.length]}
+                            width={"300px"} left={"20px"}
+                            setRefresh={setRefresh}
+                            track={event['track']}
+                            description={event['description']}/>
                     </li>
                 );
             })}

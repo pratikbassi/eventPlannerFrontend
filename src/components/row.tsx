@@ -1,60 +1,76 @@
 import React from 'react';
 import Event from "@/components/event";
+import {COLOR_LIST} from "@/helpers/constants";
+import {root} from "postcss";
 
 interface RowProps {
-    events: any;
+    events: any,
+    setRefresh: (value: (((prevState: boolean) => boolean) | boolean)) => void
 }
 
-const Row: React.FC<RowProps> = ({events}) => {
-
-    const COLOR_LIST = ['#CD7A7A', '#B2FFD6', '#35A7FF', '#B08EA2', '#FDCA40'];
+const Row: React.FC<RowProps> = ({events, setRefresh}) => {
 
 
     // Group events by track ID
-    const groupedEvents = events.reduce((acc: { [key: number]: any[] }, event: any) => {
-        const trackId = event.track || 0; // Use 0 for events without a track
-        if (!acc[trackId]) {
-            acc[trackId] = [];
+    const groupedEvents = () => {
+
+        let returnObj = {}
+
+        for (let event of events) {
+            if (returnObj[event['track_title']]) {
+                returnObj[event['track_title']].push(event)
+            } else {
+                returnObj[event['track_title']] = [event]
+            }
         }
-        acc[trackId].push(event);
-        return acc;
-    }, {});
+
+        for (let key in returnObj) {
+            returnObj[key].sort((a: any, b: any) => {
+                return new Date(a['start_time']).getTime() - new Date(b['start_time']).getTime();
+            })
+        }
+
+        return returnObj;
+    };
 
 
-    const rowStyle = {
-        width: `100%`,
+    const rootStyle = {
         display: 'flex',
-        overflow: 'hidden',
+        flexDirection: 'column', // Arrange events in a row
+        gap: '10px',
     };
 
     const trackContainerStyle = {
         display: 'flex',
-        flexDirection: 'row', // Arrange events in a row
-        position : 'relative',
+        flexDirection: 'column', // Arrange events in a row
+        position: 'relative',
         overflow: 'scroll',
         width: '100%',
         height: 'auto',
         margin: '10px',
+        gap: '10px',
     };
 
 
-
     return (
-        <div >
-            {Object.entries(groupedEvents).map(([trackId, eventsInTrack]) => (
-                <div key={trackId}>
-                    <h3>Track {trackId === '0' ? 'Unassigned' : trackId}</h3>
+        <div style={rootStyle}>
+            {Object.entries(groupedEvents()).map(([trackId, eventsInTrack]) => (
+                <div key={trackId} >
+                    <h3>Track {trackId === 'null' ? 'Unassigned' : trackId}</h3>
                     <ul style={trackContainerStyle}>
                         {eventsInTrack.map((event: any, index: number) => (
-                            <li key={event.id} style={{listStyleType: 'none'}} className={"event-item"}>
+                            <li key={event.id}
+                                style={{listStyleType: 'none', position: "relative"}}>
                                 <Event
-                                    start_time={event.start_time}
-                                    end_time={event.end_time}
-                                    title={event.title}
+                                    start_time={event['start_time']}
+                                    end_time={event['end_time']}
+                                    title={event['title']}
                                     color={COLOR_LIST[index % COLOR_LIST.length]}
-                                    id={event.id}
-                                    description={event.description}
-                                />
+                                    setRefresh={setRefresh}
+                                    track={event['track']}
+                                    description={event['description']}
+                                    id={event['id']}
+                                    />
                             </li>
                         ))}
                     </ul>

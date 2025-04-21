@@ -15,6 +15,8 @@ let getData = async () => {
 export default function Home() {
     const [data, setData] = useState<any>(null);
     const [orientation, setOrientation] = useState<any>('landscape');
+    const [createForm, setCreateForm] = useState(false);
+    const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
         getData()
@@ -25,7 +27,8 @@ export default function Home() {
             .catch((error) => {
                 console.error("Error fetching data:", error);
             });
-    }, []);
+        setRefresh(false)
+    }, [refresh]);
 
     const handleOrientationChange = () => {
         if (orientation === 'landscape') {
@@ -35,13 +38,27 @@ export default function Home() {
         }
     };
 
+    const handleShowCreateForm = () => {
+        setCreateForm(!createForm);
+    };
+
     return (
         <div>
             <main>
                 <h1>Event List</h1>
-                <button onClick={() => { handleOrientationChange() }}>Change Orientation</button>
-                <EventForm></EventForm>
-                {data ? (orientation === 'landscape' ? <Row events={data} /> : <Column events={data} /> ) : "Loading..."}
+                <button onClick={() => {
+                    handleOrientationChange()
+                }}>Change Orientation
+                </button>
+                <button onClick={() => {
+                    handleShowCreateForm()
+                }}>Create Event
+                </button>
+
+                {createForm ? <EventForm setRefresh={setRefresh}></EventForm> : null}
+
+                {data ? (orientation === 'landscape' ? <Row events={data} setRefresh={setRefresh}/> :
+                    <Column events={data} setRefresh={setRefresh}/>) : "Loading..."}
 
             </main>
             <footer>
