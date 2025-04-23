@@ -1,4 +1,4 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app). For use with: [this backend]('https://github.com/pratikbassi/eventPlannerBackend')
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app). For use with: [`this backend`]('https://github.com/pratikbassi/eventPlannerBackend')
 
 ## Getting Started
 
